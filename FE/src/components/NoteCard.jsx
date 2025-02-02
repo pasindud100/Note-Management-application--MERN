@@ -1,5 +1,7 @@
 import React from "react";
 import { TbPinned } from "react-icons/tb";
+import { MdUpdate } from "react-icons/md";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 
 function NoteCard({
   title,
@@ -27,7 +29,16 @@ function NoteCard({
 
       <div className="flex justify-between items-center mt-4 ">
         <div className="text-xs text-slate-600">{tags}</div>
-        <div className="flex items-center gap-2"></div>
+        <div className="flex items-center gap-2">
+          <MdUpdate
+            onClick={onEdit}
+            className="icon-btn hover:text-green-600"
+          />
+          <MdOutlineDeleteOutline
+            onClick={onDelete}
+            className="icon-btn hover:text-red-600"
+          />
+        </div>
       </div>
     </div>
   );

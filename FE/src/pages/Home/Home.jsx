@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
 import NoteCard from "../../components/NoteCard";
+import { FaPlus } from "react-icons/fa";
 
 function Home() {
   return (
@@ -21,6 +22,9 @@ function Home() {
           />
         </div>
       </div>
+      <button className="w-12 h-12 flex items-center justify-center bg-green-500 rounded-lg fixed  bottom-4 right-4">
+        <FaPlus className="text-white"/>
+      </button>
     </div>
   );
 }
