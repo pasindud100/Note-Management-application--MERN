@@ -26,9 +26,7 @@ function Login() {
       setError("Password is required");
       return;
     }
-      setError(null);
-
-      
+    setError(null);
   };
 
   return (
@@ -57,13 +55,13 @@ function Login() {
               />
               <div className="flex justify-end relative top-[-50px] right-2">
                 {isShowPassword ? (
-                  <FaEyeSlash
+                  <FaEye
                     size={20}
                     className="cursor-pointer "
                     onClick={() => setIsShowPassword(!isShowPassword)}
                   />
                 ) : (
-                  <FaEye
+                  <FaEyeSlash
                     size={20}
                     className="cursor-pointer "
                     onClick={() => setIsShowPassword(!isShowPassword)}
