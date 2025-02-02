@@ -17,3 +17,6 @@ body {
 .btn-secondary {
   @apply bg-[#224730] text-white py-3 px-5 rounded cursor-pointer hover:bg-[#234821];
 }
+.icon-btn{
+  @apply  text-xl text-slate-500  cursor-pointer hover:text-primary ;
+}
