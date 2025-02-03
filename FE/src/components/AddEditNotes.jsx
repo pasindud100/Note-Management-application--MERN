@@ -9,6 +9,16 @@ function AddEditNotes({ noteDate, type, onClose }) {
 
   const [err, setErr] = useState(null);
 
+  //add note
+  const addNewNote =async ()=>{
+  
+  }
+
+  //edit note
+  const editNote = async ()=>{
+    
+  }
+
   const handleAddNote = () => {
     if (!title) {
       setErr("Plese set a title for your note.");
@@ -20,8 +30,8 @@ function AddEditNotes({ noteDate, type, onClose }) {
     }
     setErr("");
 
-    if(type== "edit"){
-      MdEditNote();
+    if(type=== "edit"){
+      editNote();
     }
     else{
       addNewNote();

@@ -52,6 +52,8 @@ function Home() {
         className="w-[40%] max-h-3/4 bg-white mx-auto mt-14 rounded-lg p-5 overflow-y-auto"
       >
         <AddEditNotes
+          type={openAddEditModel.type}
+          noteDate={openAddEditModel.data}
           onClose={() => {
             setOpenAddEditModel({ isShown: false, type: "add", data: null });
           }}
