@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import NoteCard from "../../components/NoteCard";
 import { FaPlus } from "react-icons/fa";
-import AddEditNotes from "../AddEditNotes";
+import AddEditNotes from "../../components/AddEditNotes";
 import Modal from "react-modal";
-
-// Set Modal Root (Only needed once in your app)
-Modal.setAppElement("#root");
 
 function Home() {
   const [openAddEditModel, setOpenAddEditModel] = useState({
@@ -34,7 +31,6 @@ function Home() {
         </div>
       </div>
 
-      {/* Floating Add Button */}
       <button
         onClick={() =>
           setOpenAddEditModel({ isShown: true, type: "add", data: null })
@@ -44,9 +40,8 @@ function Home() {
         <FaPlus className="text-white text-lg" />
       </button>
 
-     
       <Modal
-        isOpen={openAddEditModel.isShown} 
+        isOpen={openAddEditModel.isShown}
         onRequestClose={() =>
           setOpenAddEditModel({ isShown: false, type: "add", data: null })
         }
@@ -56,15 +51,11 @@ function Home() {
         contentLabel="Add or Edit Note"
         className="w-[40%] max-h-3/4 bg-white mx-auto mt-14 rounded-lg p-5 overflow-y-auto"
       >
-        <AddEditNotes />
-        <button
-          onClick={() =>
-            setOpenAddEditModel({ isShown: false, type: "add", data: null })
-          }
-          className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-        >
-          Close
-        </button>
+        <AddEditNotes
+          onClose={() => {
+            setOpenAddEditModel({ isShown: false, type: "add", data: null });
+          }}
+        />
       </Modal>
     </div>
   );
