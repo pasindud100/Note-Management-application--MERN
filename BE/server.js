@@ -3,6 +3,9 @@ import express from "express";
 
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { authenticateToken } from "./utilities.js";
+import User from "./models/user.model.js";
 
 const app = express();
 dotenv.config();
@@ -28,6 +31,42 @@ mongoose
 app.get("/", (req, res) => {
   res.json("Hello World!");
 });
+
+//create account
+app.post("/create-account", async (req, res) => {
+  const { fullName, email, password } = req.body;
+  if (!fullName) {
+    return res.json({ message: "Fullname is required" });
+  }
+  if (!email) {
+    return res.json({ message: "Email is required" });
+  }
+  if (!password) {
+    return res.json({ message: "Password is required" });
+  }
+
+  const isUser = await User.findOne({ email: email });
+  if (isUser) {
+    return res.json({ error: true, message: "User already exists" });
+  }
+  const user = new User({
+    fullName,
+    email,
+    password,
+  });
+  await user.save();
+
+  const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "5m",
+  });
+  return res.json({
+    error: false,
+    message: "Account created successfully",
+    accessToken,
+    user,
+  });
+});
+
 app.listen(Port, () => {
   console.log(`Server is running on port ${Port}`);
 });
