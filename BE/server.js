@@ -7,10 +7,14 @@ import dotenv from "dotenv";
 const app = express();
 dotenv.config();
 
-app.use(cors());
-app.use(express.json());
+app.use(
+  cors({
+    origin: "*", //this  allow for server to accept requests from different origin..
+  })
+);
+app.use(express.json()); //this is a middleware to parse incoming request with json payloads..
 
-const PORT = process.env.PORT || 5000;
+const Port = process.env.PORT || 5000;
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -21,6 +25,9 @@ mongoose
     console.error("Error connecting to MongoDB", error);
   });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.get("/", (req, res) => {
+  res.json("Hello World!");
+});
+app.listen(Port, () => {
+  console.log(`Server is running on port ${Port}`);
 });
