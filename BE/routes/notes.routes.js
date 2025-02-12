@@ -2,7 +2,8 @@ import {
   createNote,
   editNote,
   getAllNotes,
-  deleteNote
+  deleteNote,
+  updatePinned,
 } from "../controllers/notes.controller.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
 import express from "express";
@@ -12,5 +13,6 @@ router.post("/add-note", createNote);
 router.put("/edit-note/:noteId", editNote);
 router.get("/get-all-notes", getAllNotes);
 router.delete("/delete-note/:noteId", deleteNote);
+router.put("/update-note-pinned/:noteId", updatePinned);
 
 export default router;
