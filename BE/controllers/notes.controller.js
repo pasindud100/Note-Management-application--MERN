@@ -34,6 +34,7 @@ export const createNote = async (req, res) => {
   }
 };
 
+//update notes
 export const editNote = async (req, res) => {
   const noteId = req.params.noteId;
   const { title, content, tags, isPinned } = req.body;
@@ -69,6 +70,49 @@ export const editNote = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({
+      error: true,
+      message: "Internal server error...",
+    });
+  }
+};
+
+// get all notes
+export const getAllNotes = async (req, res) => {
+  const { user } = req.user;
+  try {
+    const notes = await Note.find({ userId: user._id }).sort({ isPinned: -1 });
+    return res.json({
+      error: false,
+      notes,
+      message: "Notes fetched successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: true,
+      message: "Internal server error...",
+    });
+  }
+};
+
+//delete notes
+export const deleteNote = async (req, res) => {
+  const { user } = req.user;
+  const noteId = req.params.noteId;
+  try {
+    const note = await Note.findOne({ _id: noteId, userId: user._id });
+    if (!note) {
+      return res.status.json({
+        error: true,
+        message: "Note not found for delete",
+      });
+    }
+    await note.deleteOne({ _id: noteId, userId: user._id });
+    return res.status.json({
+      error: false,
+      message: "Note deleted successfully",
+    });
+  } catch (error) {
+    return res.status.json({
       error: true,
       message: "Internal server error...",
     });
