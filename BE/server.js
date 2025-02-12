@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes.js";
+import noteRoutes from "./routes/notes.routes.js";
 
 dotenv.config(); // this load environment variables from .env file
 const app = express(); //
@@ -18,6 +19,7 @@ mongoose
   .catch((error) => console.error("Error connecting to MongoDB", error));
 
 app.use("/api/users", userRoutes);
+app.use("/api/notes", noteRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
