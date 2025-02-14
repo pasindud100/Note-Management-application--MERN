@@ -37,7 +37,10 @@ export const createAccount = async (req, res) => {
   }
 };
 
-//login
+//loginimport jwt from "jsonwebtoken";
+
+
+// Login
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -50,19 +53,23 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User  not found" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({
-        message: "Invalid credentials..Please provide connrect password...",
+        message: "Invalid credentials..Please provide correct password...",
       });
     }
 
-    const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "5m",
-    });
+    const accessToken = jwt.sign(
+      { id: user._id },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "5m",
+      }
+    );
 
     return res.json({
       error: false,
@@ -74,7 +81,6 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: "Internal server error", error });
   }
 };
-
 //get all users
 export const getAllUsers = async (req, res) => {
   const { user } = req.user;
