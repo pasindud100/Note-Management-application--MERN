@@ -39,7 +39,6 @@ export const createAccount = async (req, res) => {
 
 //loginimport jwt from "jsonwebtoken";
 
-
 // Login
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -81,23 +80,32 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: "Internal server error", error });
   }
 };
-//get all users
-export const getAllUsers = async (req, res) => {
-  const { user } = req.user;
 
-  const isUser = await User.findOne({ _id: user._id });
-  if (!isUser) {
-    return res.status(404).json({
-      message: "User not found",
+//get all users
+
+export const getAllUsers = async (req, res) => {
+  try {
+    console.log("Request received at /get-user"); // Debugging
+    console.log("Decoded user from token:", req.user); // Check user data
+
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: "Unauthorized: No valid user" });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({
+      user: {
+        fullName: user.fullName,
+        email: user.email,
+        _id: user._id,
+      },
+      message: "User retrieved successfully",
     });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error });
   }
-  return res.json({
-    user: {
-      fullName: isUser.fullName,
-      email: isUser.email,
-      _id: isUser._id,
-      createdOn: isUser.creationOn,
-    },
-    message: "",
-  });
 };

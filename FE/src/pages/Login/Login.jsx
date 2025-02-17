@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import axiosInstance from "../../utils/axiosInstancs"; // Corrected the import name
+import axiosInstance from "../../utils/axiosInstancs";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -30,7 +30,6 @@ function Login() {
     }
     setError(null);
 
-    // Login API
     try {
       const response = await axiosInstance.post("/api/users/login", {
         email: email,

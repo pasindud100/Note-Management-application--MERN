@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import NoteCard from "../../components/NoteCard";
 import { FaPlus } from "react-icons/fa";
 import AddEditNotes from "../../components/AddEditNotes";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstancs";
 
 function Home() {
   const [openAddEditModel, setOpenAddEditModel] = useState({
@@ -11,6 +13,29 @@ function Home() {
     type: "add",
     data: null,
   });
+
+  const [userInfo, setUserInfo] = useState(null);
+  const navigate = useNavigate();
+
+  //get user info
+  const getUserInfo = async () => {
+    try {
+      const response = await axiosInstance.get("/get-user");
+      if (response.data && response.data.user) {
+        setUserInfo(response.data.user);
+      }
+    } catch (error) {
+      if (error.response.status) {
+        localStorage.clear();
+        navigate("/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+    return () => {};
+  }, []);
 
   return (
     <div>
