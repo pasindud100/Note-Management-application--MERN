@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Navbar from "../../components/Navbar";
-import { Link } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axiosInstance from "../../utils/axiosInstancs";
+import axios from "axios";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -11,38 +11,49 @@ function Signup() {
   const [error, setError] = useState(null);
   const [isShowPassword, setIsShowPassword] = useState(false);
 
-  const validEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const navigate = useNavigate();
+
+  const validEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    if (!name) {
-      setError("Please fill the name.");
-      return;
-    }
-    if (!validEmail(email)) {
-      setError("Please enter valid email");
-      return;
-    }
-    if (!password) {
-      setError("Please enter password");
-      return;
-    }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return;
-    }
+    if (!name) return setError("Please fill in your name.");
+    if (!validEmail(email)) return setError("Please enter a valid email.");
+    if (!password) return setError("Please enter a password.");
+    if (password.length < 6)
+      return setError("Password must be at least 6 characters long.");
+
     setError("");
+
+    try {
+      const response = await axiosInstance.post("/api/users/create-account", {
+        fullName: name,
+        email: email,
+        password: password,
+      });
+      if (response.data && response.data.accessToken) {
+        localStorage.setItem("token", response.data.accessToken);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
+    }
   };
+
   return (
     <div>
-      <Navbar />
       <div className="flex items-center justify-center mt-28">
-        <div className="w-96 border border-gray-300 rounded-lg  p-10">
-          <form action="" onSubmit={handleSignup}>
+        <div className="w-96 border border-gray-300 rounded-lg p-10">
+          <form onSubmit={handleSignup}>
             <h2 className="mb-5 text-2xl">Sign Up</h2>
 
             <input
@@ -59,36 +70,34 @@ function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-
-            <input
-              placeholder="Password"
-              className="input-box"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type={isShowPassword ? "text" : "password"}
-            />
-            <div className="flex justify-end relative top-[-50px] right-2">
-              {isShowPassword ? (
-                <FaEye
-                  size={20}
-                  className="cursor-pointer "
-                  onClick={() => setIsShowPassword(!isShowPassword)}
-                />
-              ) : (
-                <FaEyeSlash
-                  size={20}
-                  className="cursor-pointer "
-                  onClick={() => setIsShowPassword(!isShowPassword)}
-                />
-              )}
+            <div className="relative">
+              <input
+                placeholder="Password"
+                className="input-box"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type={isShowPassword ? "text" : "password"}
+              />
+              <div className="absolute right-2 top-3 cursor-pointer">
+                {isShowPassword ? (
+                  <FaEye size={20} onClick={() => setIsShowPassword(false)} />
+                ) : (
+                  <FaEyeSlash
+                    size={20}
+                    onClick={() => setIsShowPassword(true)}
+                  />
+                )}
+              </div>
             </div>
+
             {error && <p className="text-red-500 text-sm pb-2">{error}</p>}
+
             <button type="submit" className="btn-primary">
               Create account
             </button>
 
             <p className="text-sm text-center mt-4">
-              have an account?{" "}
+              Have an account?{" "}
               <Link to="/login" className="text-blue-500 underline">
                 Sign In!
               </Link>

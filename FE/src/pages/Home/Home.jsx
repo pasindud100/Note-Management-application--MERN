@@ -4,6 +4,7 @@ import NoteCard from "../../components/NoteCard";
 import { FaPlus } from "react-icons/fa";
 import AddEditNotes from "../../components/AddEditNotes";
 import Modal from "react-modal";
+
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstancs";
 
@@ -25,7 +26,7 @@ function Home() {
         setUserInfo(response.data.user);
       }
     } catch (error) {
-      if (error.response.status) {
+      if (error.response.status== 401) {
         localStorage.clear();
         navigate("/login");
       }
@@ -39,7 +40,7 @@ function Home() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar userInfo={userInfo} />
 
       <div className="container mx-auto">
         <div className="grid grid-cols-3 gap-4 mt-8">

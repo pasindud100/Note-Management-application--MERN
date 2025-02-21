@@ -1,6 +1,6 @@
 import React from "react";
 
-function ProfileInfo({ logout }) {
+function ProfileInfo({ userInfo, logout }) {
   const getInitials = (name) => {
     if (!name) {
       return "";
@@ -16,15 +16,19 @@ function ProfileInfo({ logout }) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="w-12 h-12 flex items-center justify-center text-slate-900 bg-slate-300 rounded-full font-medium ">
-        {getInitials("pasindu dilshan ")}
-      </div>
-      <div className="">
-        <p className="text-sm font-medium">Pasindu Dilshan</p>
-        <button className="" onClick={logout}>
-          LogOut
-        </button>
-      </div>
+      {userInfo && (
+        <div>
+          <div className="w-12 h-12 flex items-center justify-center text-slate-900 bg-slate-300 rounded-full font-medium ">
+            {getInitials(userInfo.fullName)}
+          </div>
+          <div className="">
+            <p className="text-sm font-medium">{userInfo.fullName}</p>
+            <button className="" onClick={logout}>
+              LogOut
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

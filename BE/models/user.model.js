@@ -13,10 +13,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  creationOn: {
-    type: Date,
-    default: new Date().getTime(),
-  },
+  creationOn: { type: Date, default: Date.now },
 });
 
 const User = mongoose.model("User", userSchema);

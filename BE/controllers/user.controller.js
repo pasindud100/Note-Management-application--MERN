@@ -2,7 +2,33 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 
-//sign up
+// export const createAccount = async (req, res) => {
+//   try {
+//     const { fullName, email, password } = req.body;
+
+//     if (!fullName || !email || !password) {
+//       return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     const isUser = await User.findOne({ email });
+//     if (isUser) {
+//       return res.status(409).json({ message: "User already exists" });
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const user = new User({ fullName, email, password: hashedPassword });
+//     await user.save();
+
+//     return res.status(201).json({
+//       error: false,
+//       message: "Account created successfully",
+//     });
+//   } catch (error) {
+//     console.error("Signup Error:", error);
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
 export const createAccount = async (req, res) => {
   const { fullName, email, password } = req.body;
 
@@ -13,7 +39,7 @@ export const createAccount = async (req, res) => {
   try {
     const isUser = await User.findOne({ email });
     if (isUser) {
-      return res.status(409).json({ message: "User already exists..." });
+      return res.status(409).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -23,17 +49,19 @@ export const createAccount = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "5m" }
+      {
+        expiresIn: "15m",
+      }
     );
 
-    res.status(201).json({
+    return res.json({
       error: false,
-      message: "Account created successfully",
+      message: "Login successful",
       user,
       accessToken,
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    return res.status(500).json({ message: "Internal server error", error });
   }
 };
 
@@ -66,7 +94,7 @@ export const login = async (req, res) => {
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "5m",
+        expiresIn: "15m",
       }
     );
 
