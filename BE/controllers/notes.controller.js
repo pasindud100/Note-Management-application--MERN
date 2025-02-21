@@ -78,19 +78,24 @@ export const editNote = async (req, res) => {
 
 // get all notes
 export const getAllNotes = async (req, res) => {
-  const { user } = req.user;
+  if (!req.user) {
+    return res.status(401).json({ error: true, message: "Unauthorized" });
+  }
+
+  console.log("User ID:", req.user._id); // Log the user ID
+
   try {
-    const notes = await Note.find({ userId: user._id }).sort({ isPinned: -1 });
+    const notes = await Note.find();
+    console.log("Fetched Notes:", notes); // Log the fetched notes
     return res.json({
       error: false,
       notes,
       message: "Notes fetched successfully",
     });
   } catch (err) {
-    return res.status(500).json({
-      error: true,
-      message: "Internal server error...",
-    });
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error..." });
   }
 };
 

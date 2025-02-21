@@ -4,7 +4,7 @@ import NoteCard from "../../components/NoteCard";
 import { FaPlus } from "react-icons/fa";
 import AddEditNotes from "../../components/AddEditNotes";
 import Modal from "react-modal";
-
+import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstancs";
 
@@ -16,9 +16,10 @@ function Home() {
   });
 
   const [userInfo, setUserInfo] = useState(null);
+  const [allNotes, setAllNotes] = useState([]);
   const navigate = useNavigate();
 
-  //get user info
+  // Get user info
   const getUserInfo = async () => {
     try {
       const response = await axiosInstance.get("/get-user");
@@ -26,16 +27,28 @@ function Home() {
         setUserInfo(response.data.user);
       }
     } catch (error) {
-      if (error.response.status== 401) {
+      if (error.response && error.response.status === 401) {
         localStorage.clear();
         navigate("/login");
       }
     }
   };
 
+  // Get all notes
+  const getAllNotes = async () => {
+    try {
+      const response = await axiosInstance.get("/api/notes/get-all-notes");
+      if (response.data && response.data.notes) {
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.log("An unexpected error occurred...please try again..");
+    }
+  };
+
   useEffect(() => {
+    getAllNotes();
     getUserInfo();
-    return () => {};
   }, []);
 
   return (
@@ -44,16 +57,19 @@ function Home() {
 
       <div className="container mx-auto">
         <div className="grid grid-cols-3 gap-4 mt-8">
-          <NoteCard
-            title="Note 1"
-            date="2022-01-01"
-            content="This is the content of note 1"
-            tags="#tag1, #tag2"
-            isPinned={true}
-            onEdit={() => {}}
-            onDelete={() => {}}
-            onPinNote={() => {}}
-          />
+          {allNotes.map((item) => (
+            <NoteCard
+              key={item._id} // Use a unique key, preferably the _id
+              title={item.title}
+              date={item.createdOn}
+              content={item.content}
+              tags={item.tags} // Ensure to use the correct property name
+              isPinned={item.isPinned}
+              onEdit={() => {}} // Implement edit functionality
+              onDelete={() => {}} // Implement delete functionality
+              onPinNote={() => {}} // Implement pin functionality
+            />
+          ))}
         </div>
       </div>
 
