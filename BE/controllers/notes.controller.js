@@ -2,15 +2,12 @@ import Note from "../models/notes.model.js";
 
 export const createNote = async (req, res) => {
   const { title, content, tags } = req.body;
-  // const {user} = req.user;
 
   if (!title) {
     return res.status(400).json({ error: true, message: "Title is required" });
   }
   if (!content) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Content is required" });
+    return res.status(400).json({ error: true, message: "Content is required" });
   }
 
   try {
@@ -18,22 +15,22 @@ export const createNote = async (req, res) => {
       title,
       content,
       tags: tags || [],
+      userId: req.user._id, // Ensure you are saving the userId
     });
     await note.save();
-    res.json({
+    return res.json({
       error: false,
       note,
       message: "Note created successfully",
     });
   } catch (error) {
-    console.error(error); // Log the error to console for debugging
-    res.status(500).json({
+    console.error("Error creating note:", error); // Log the error for debugging
+    return res.status(500).json({
       error: true,
       message: "Internal server error...",
     });
   }
 };
-
 //update notes
 export const editNote = async (req, res) => {
   const noteId = req.params.noteId;
