@@ -28,7 +28,6 @@ function TagInput({ tags, setTags }) {
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Tags Display */}
       <div className="flex flex-wrap gap-2">
         {tags?.map((tag, index) => (
           <div key={index} className="flex items-center bg-green-400 text-white px-2 py-1 rounded-md">
@@ -43,7 +42,6 @@ function TagInput({ tags, setTags }) {
         ))}
       </div>
 
-      {/* Input & Add Button */}
       <div className="flex items-center gap-2">
         <input
           type="text"

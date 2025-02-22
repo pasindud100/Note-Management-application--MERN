@@ -7,7 +7,9 @@ export const createNote = async (req, res) => {
     return res.status(400).json({ error: true, message: "Title is required" });
   }
   if (!content) {
-    return res.status(400).json({ error: true, message: "Content is required" });
+    return res
+      .status(400)
+      .json({ error: true, message: "Content is required" });
   }
 
   try {
@@ -15,7 +17,7 @@ export const createNote = async (req, res) => {
       title,
       content,
       tags: tags || [],
-      userId: req.user._id, // Ensure you are saving the userId
+      userId: req.user._id,
     });
     await note.save();
     return res.json({
@@ -24,41 +26,36 @@ export const createNote = async (req, res) => {
       message: "Note created successfully",
     });
   } catch (error) {
-    console.error("Error creating note:", error); // Log the error for debugging
+    console.error("Error creating note:", error);
     return res.status(500).json({
       error: true,
       message: "Internal server error...",
     });
   }
 };
-//update notes
+
+// Edit an existiting note
 export const editNote = async (req, res) => {
   const noteId = req.params.noteId;
   const { title, content, tags, isPinned } = req.body;
-  const { user } = req.user;
 
   if (!title || !content || !tags) {
     return res
       .status(400)
       .json({ error: true, message: "No changes provided" });
   }
+
   try {
-    const note = await Note.findOne({ _id: noteId, userId: user._id });
+    const note = await Note.findOne({ _id: noteId, userId: req.user._id });
     if (!note) {
       return res.status(404).json({ error: true, message: "Note not found" });
     }
-    if (title) {
-      note.title = title;
-    }
-    if (content) {
-      note.content = content;
-    }
-    if (tags) {
-      note.tags = tags;
-    }
-    if (isPinned) {
-      note.isPinned = isPinned;
-    }
+
+    note.title = title;
+    note.content = content;
+    note.tags = tags;
+    note.isPinned = isPinned;
+
     await note.save();
     return res.json({
       error: false,
@@ -66,6 +63,7 @@ export const editNote = async (req, res) => {
       message: "Note updated successfully",
     });
   } catch (err) {
+    console.error("Error updating note:", err);
     return res.status(500).json({
       error: true,
       message: "Internal server error...",
@@ -79,11 +77,11 @@ export const getAllNotes = async (req, res) => {
     return res.status(401).json({ error: true, message: "Unauthorized" });
   }
 
-  console.log("User ID:", req.user._id); // Log the user ID
+  console.log("User ID:", req.user._id); // Log the user id
 
   try {
     const notes = await Note.find();
-    console.log("Fetched Notes:", notes); // Log the fetched notes
+    console.log("Fetched Notes:", notes);
     return res.json({
       error: false,
       notes,
@@ -98,23 +96,25 @@ export const getAllNotes = async (req, res) => {
 
 //delete notes
 export const deleteNote = async (req, res) => {
-  const { user } = req.user;
   const noteId = req.params.noteId;
+
   try {
-    const note = await Note.findOne({ _id: noteId, userId: user._id });
+    const note = await Note.findOne({ _id: noteId, userId: req.user._id });
     if (!note) {
-      return res.status.json({
+      return res.status(404).json({
         error: true,
         message: "Note not found for delete",
       });
     }
-    await note.deleteOne({ _id: noteId, userId: user._id });
-    return res.status.json({
+
+    await note.deleteOne();
+    return res.json({
       error: false,
       message: "Note deleted successfully",
     });
   } catch (error) {
-    return res.status.json({
+    console.error("Error deleting note:", error);
+    return res.status(500).json({
       error: true,
       message: "Internal server error...",
     });

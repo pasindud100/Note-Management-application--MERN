@@ -24,7 +24,7 @@ function NoteCard({
           </span>
         </div>
         <TbPinned
-          onClick={onPinNote} // Use onClick instead of onChange
+          onClick={onPinNote} 
           className={`icon-btn ${isPinned ? "text-primary" : "text-slate-300"}`}
         />
       </div>
@@ -33,7 +33,7 @@ function NoteCard({
       <div className="flex justify-between items-center mt-4 ">
         <div className="text-xs text-slate-600">
           {tags.map((item, index) => (
-            <span key={index}>#{item} </span> // Display tags correctly
+            <span key={index}>#{item} </span> 
           ))}
         </div>
         <div className="flex items-center gap-2">

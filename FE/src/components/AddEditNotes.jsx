@@ -4,9 +4,9 @@ import { IoMdClose } from "react-icons/io";
 import axiosInstance from "../utils/axiosInstancs";
 
 function AddEditNotes({ noteDate, type, getAllNotes, onClose }) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState([]);
+  const [title, setTitle] = useState(noteDate?.title || "");
+  const [content, setContent] = useState(noteDate?.content || "");
+  const [tags, setTags] = useState(noteDate?.tags || []);
   const [err, setErr] = useState(null);
 
   // Add note
@@ -32,7 +32,27 @@ function AddEditNotes({ noteDate, type, getAllNotes, onClose }) {
 
   // Edit note
   const editNote = async () => {
-    // Implement edit functionality here
+    try {
+      const noteId = noteDate._id;
+      const response = await axiosInstance.put(
+        `/api/notes/edit-note/${noteId}`,
+        {
+          title,
+          content,
+          tags,
+        }
+      );
+
+      getAllNotes();
+      onClose();
+      window.location.reload(); 
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErr(error.response.data.message || "An error occurred");
+      } else {
+        setErr("An unexpected error occurred");
+      }
+    }
   };
 
   const handleAddNote = () => {
@@ -88,7 +108,7 @@ function AddEditNotes({ noteDate, type, getAllNotes, onClose }) {
       </div>
       {err && <p className="text-red-500 text-xs">{err}</p>}
       <button className="btn-primary my-5 font-medium" onClick={handleAddNote}>
-        Save Note
+        {type === "edit" ? "Update note" : "Add note"}
       </button>
     </div>
   );

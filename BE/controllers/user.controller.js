@@ -46,6 +46,7 @@ export const createAccount = async (req, res) => {
     const user = new User({ fullName, email, password: hashedPassword });
     await user.save();
 
+    
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
@@ -60,7 +61,10 @@ export const createAccount = async (req, res) => {
       user,
       accessToken,
     });
-  } catch (error) {
+
+  } 
+  
+  catch (error) {
     return res.status(500).json({ message: "Internal server error", error });
   }
 };
@@ -113,8 +117,8 @@ export const login = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    console.log("Request received at /get-user"); // Debugging
-    console.log("Decoded user from token:", req.user); // Check user data
+    console.log("Request received at /get-user"); 
+    console.log("Decoded user from token:", req.user); 
 
     if (!req.user || !req.user._id) {
       return res.status(401).json({ message: "Unauthorized: No valid user" });

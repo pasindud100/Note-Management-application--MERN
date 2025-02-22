@@ -7,6 +7,8 @@ import Modal from "react-modal";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstancs";
+import toast from "../../components/ToastMessage";
+import ToastMessage from "../../components/ToastMessage";
 
 function Home() {
   const [openAddEditModel, setOpenAddEditModel] = useState({
@@ -14,10 +16,19 @@ function Home() {
     type: "add",
     data: null,
   });
+  const [showToastMsg, setShowToastMsg] = useState({
+    isShow: false,
+    message: "",
+    type: "add",
+  });
 
   const [userInfo, setUserInfo] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
   const navigate = useNavigate();
+
+  const handleEdit = (noteDetails) => {
+    setOpenAddEditModel({ isShown: true, data: noteDetails, type: "edit" });
+  };
 
   // Get user info
   const getUserInfo = async () => {
@@ -32,6 +43,21 @@ function Home() {
         navigate("/login");
       }
     }
+  };
+
+  const showToastMessage = (message, type) => {
+    setShowToastMsg({
+      isShown: true,
+      message,
+      type,
+    });
+  };
+
+  const handleCloseToast = () => {
+    setShowToastMsg({
+      isShown: false,
+      message: "",
+    });
   };
 
   // Get all notes
@@ -59,15 +85,17 @@ function Home() {
         <div className="grid grid-cols-3 gap-4 mt-8">
           {allNotes.map((item) => (
             <NoteCard
-              key={item._id} // Use a unique key, preferably the _id
+              key={item._id}
               title={item.title}
               date={item.createdOn}
               content={item.content}
-              tags={item.tags} // Ensure to use the correct property name
+              tags={item.tags}
               isPinned={item.isPinned}
-              onEdit={() => {}} // Implement edit functionality
-              onDelete={() => {}} // Implement delete functionality
-              onPinNote={() => {}} // Implement pin functionality
+              onEdit={() => {
+                handleEdit(item);
+              }}
+              onDelete={() => {}}
+              onPinNote={() => {}}
             />
           ))}
         </div>
@@ -99,10 +127,16 @@ function Home() {
           onClose={() => {
             setOpenAddEditModel({ isShown: false, type: "add", data: null });
           }}
-
-          getAllNotes ={getAllNotes}
+          getAllNotes={getAllNotes}
         />
       </Modal>
+
+      <ToastMessage
+        isShown={showToastMsg.isShown}
+        message={showToastMsg.message}
+        type={showToastMsg.type}
+        onClose={handleCloseToast}
+      />
     </div>
   );
 }
