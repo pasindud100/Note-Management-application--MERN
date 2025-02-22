@@ -150,33 +150,32 @@ export const updatePinned = async (req, res) => {
 };
 
 export const serarchNote = async (req, res) => {
-  const { user } = req.user;
-  const queary = req.queary;
+  const query = req.query.query; // Corrected from queary to query
 
-  if (!queary) {
+  if (!query) {
     return res.status(400).json({
       error: true,
-      message: "Search quary is required..",
+      message: "Search query is required.",
     });
   }
   try {
     const matchingNote = await Note.find({
-      userId: user._id,
       $or: [
-        { title: { $regex: new RegExp(queary, "i") } },
-        { content: { $regex: new RegExp(queary, "1") } },
+        { title: { $regex: new RegExp(query, "i") } },
+        { content: { $regex: new RegExp(query, "i") } }, // Corrected from "1" to "i"
       ],
     });
 
     return res.json({
       error: false,
-      note: matchingNote,
-      message: "Serched note match successfully",
+      notes: matchingNote, // Corrected from note to notes
+      message: "Searched notes matched successfully",
     });
   } catch (error) {
+    console.error("Error searching notes:", error); // Log the error for debugging
     return res.status(500).json({
       error: true,
-      message: "internal server error",
+      message: "Internal server error",
     });
   }
 };

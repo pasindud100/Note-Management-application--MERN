@@ -117,6 +117,11 @@ function Home() {
     }
   };
 
+  const handleClearSearch = () => {
+    setIsSearch(false);
+    getAllNotes();
+  };
+
   useEffect(() => {
     getAllNotes();
     getUserInfo();
@@ -124,7 +129,11 @@ function Home() {
 
   return (
     <div>
-      <Navbar userInfo={userInfo} onSearchNote={onSearchNote} />
+      <Navbar
+        userInfo={userInfo}
+        onSearchNote={onSearchNote}
+        handleClearSearch={handleClearSearch}
+      />
 
       <div className="container mx-auto">
         {allNotes.length > 0 ? (
