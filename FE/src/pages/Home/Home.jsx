@@ -106,6 +106,7 @@ function Home() {
     }
   };
 
+  const updateIsPinned = async (noteDate) => {};
   const handleClearSearch = () => {
     setIsSearch(false);
     getAllNotes();
@@ -146,7 +147,11 @@ function Home() {
         ) : (
           <EmptyCard
             imgSrc={img1}
-            message={"No any note yet..Please create note.."}
+            message={
+              isSearch
+                ? "Opps! no any matchching notes..."
+                : "No any note yet..Please create note.."
+            }
           />
         )}
       </div>
@@ -173,7 +178,7 @@ function Home() {
       >
         <AddEditNotes
           type={openAddEditModel.type}
-          noteDate={openAddEditModel.data}
+          noteDat={openAddEditModel.data}
           onClose={() => {
             setOpenAddEditModel({ isShown: false, type: "add", data: null });
           }}

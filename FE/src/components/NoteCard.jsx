@@ -23,22 +23,24 @@ function NoteCard({
             {moment(date).format("Do MMM YYYY")}
           </span>
         </div>
-        <TbPinned
-          onClick={onPinNote} 
-          className={`icon-btn ${isPinned ? "text-primary" : "text-slate-300"}`}
-        />
       </div>
       <p className="text-slate-600 text-sm mt-2">{content?.slice(0, 60)}</p>
 
       <div className="flex justify-between items-center mt-4 ">
         <div className="text-xs text-slate-600">
           {tags.map((item, index) => (
-            <span key={index}>#{item} </span> 
+            <span key={index}>#{item} </span>
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <MdUpdate onClick={onEdit} className="icon-btn hover:text-green-600" />
-          <MdOutlineDeleteOutline onClick={onDelete} className="icon-btn hover:text-red-600" />
+          <MdUpdate
+            onClick={onEdit}
+            className="icon-btn hover:text-green-600"
+          />
+          <MdOutlineDeleteOutline
+            onClick={onDelete}
+            className="icon-btn hover:text-red-600"
+          />
         </div>
       </div>
     </div>

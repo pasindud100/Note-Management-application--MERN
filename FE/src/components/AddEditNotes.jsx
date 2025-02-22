@@ -4,15 +4,15 @@ import { IoMdClose } from "react-icons/io";
 import axiosInstance from "../utils/axiosInstancs";
 
 function AddEditNotes({
-  noteDate,
+  noteData,
   type,
   getAllNotes,
   onClose,
   showToastMessage,
 }) {
-  const [title, setTitle] = useState(noteDate?.title || "");
-  const [content, setContent] = useState(noteDate?.content || "");
-  const [tags, setTags] = useState(noteDate?.tags || []);
+  const [title, setTitle] = useState(noteData?.title || "");
+  const [content, setContent] = useState(noteData?.content || "");
+  const [tags, setTags] = useState(noteData?.tags || []);
   const [err, setErr] = useState(null);
 
   // this for add note
@@ -44,7 +44,7 @@ function AddEditNotes({
 
   // Edit note
   const editNote = async () => {
-    const noteId = noteDate._id;
+    const noteId = noteData._id;
 
     try {
       const response = await axiosInstance.put(
@@ -53,7 +53,7 @@ function AddEditNotes({
           title,
           content,
           tags,
-          isPinned: noteDate?.isPinned || false, 
+          isPinned: noteData?.isPinned || false,
         }
       );
 
