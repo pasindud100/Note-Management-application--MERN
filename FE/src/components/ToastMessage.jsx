@@ -14,7 +14,7 @@ function ToastMessage({ isShown, message, type, onClose }) {
 
   return (
     <div
-      className={`absolute top-30 right-6 transition-all duration-500 ${
+      className={`absolute left-0 bottom-2 transition-all duration-500 ${
         isShown ? "opacity-50" : "opacity-100"
       }`}
     >

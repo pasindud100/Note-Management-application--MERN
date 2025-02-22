@@ -4,10 +4,8 @@ import NoteCard from "../../components/NoteCard";
 import { FaPlus } from "react-icons/fa";
 import AddEditNotes from "../../components/AddEditNotes";
 import Modal from "react-modal";
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstancs";
-import toast from "../../components/ToastMessage";
 import ToastMessage from "../../components/ToastMessage";
 import EmptyCard from "../../components/EmptyCard";
 import img1 from "../../assets/noContent.png";
@@ -27,8 +25,6 @@ function Home() {
   const [userInfo, setUserInfo] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
-
-  //search note
 
   const navigate = useNavigate();
 
@@ -53,7 +49,7 @@ function Home() {
 
   const showToastMessage = (message, type) => {
     setShowToastMsg({
-      isShown: true,
+      isShow: true,
       message,
       type,
     });
@@ -61,7 +57,7 @@ function Home() {
 
   const handleCloseToast = () => {
     setShowToastMsg({
-      isShown: false,
+      isShow: false,
       message: "",
     });
   };
@@ -78,7 +74,7 @@ function Home() {
     }
   };
 
-  //delete note
+  // Delete note
   const deleteNote = async (data) => {
     const noteId = data._id;
     try {
@@ -87,25 +83,18 @@ function Home() {
       );
 
       if (response.data && !response.data.error) {
-        showToastMessage("Note delete successfully", "delete");
+        showToastMessage("Note deleted successfully", "delete");
         getAllNotes();
-        onClose();
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        console.log("An unexpected error occurred");
-      }
+      console.log("An unexpected error occurred");
     }
   };
 
-  //search notes
+  // Search notes
   const onSearchNote = async (query) => {
     try {
-      const response = await axiosInstance.get("/api/notes/serarch-note", {
+      const response = await axiosInstance.get("/api/notes/search-note", {
         params: { query },
       });
       if (response.data && response.data.notes) {
@@ -194,7 +183,7 @@ function Home() {
       </Modal>
 
       <ToastMessage
-        isShown={showToastMsg.isShown}
+        isShown={showToastMsg.isShow}
         message={showToastMsg.message}
         type={showToastMsg.type}
         onClose={handleCloseToast}

@@ -15,7 +15,7 @@ function AddEditNotes({
   const [tags, setTags] = useState(noteDate?.tags || []);
   const [err, setErr] = useState(null);
 
-  // Add note
+  // this for add note
   const addNewNote = async () => {
     try {
       const response = await axiosInstance.post("/api/notes/add-note", {
@@ -35,8 +35,9 @@ function AddEditNotes({
         error.response.data &&
         error.response.data.message
       ) {
-      } else {
         setErr(error.response.data.message);
+      } else {
+        setErr("An unexpected error occurred");
       }
     }
   };
@@ -49,15 +50,15 @@ function AddEditNotes({
       const response = await axiosInstance.put(
         "/api/notes/edit-note/" + noteId,
         {
-          noteId,
           title,
           content,
           tags,
+          isPinned: noteDate?.isPinned || false, 
         }
       );
 
       if (response.data && response.data.note) {
-        showToastMessage("Note Update successfully");
+        showToastMessage("Note updated successfully");
         getAllNotes();
         onClose();
       }

@@ -77,7 +77,7 @@ export const getAllNotes = async (req, res) => {
     return res.status(401).json({ error: true, message: "Unauthorized" });
   }
 
-  console.log("User ID:", req.user._id); // Log the user id
+  console.log("User ID:", req.user._id);
 
   try {
     const notes = await Note.find();
@@ -149,8 +149,8 @@ export const updatePinned = async (req, res) => {
   }
 };
 
-export const serarchNote = async (req, res) => {
-  const query = req.query.query; // Corrected from queary to query
+export const searchNote = async (req, res) => {
+  const query = req.query.query; 
 
   if (!query) {
     return res.status(400).json({
@@ -160,19 +160,20 @@ export const serarchNote = async (req, res) => {
   }
   try {
     const matchingNote = await Note.find({
+      userId: req.user._id, 
       $or: [
         { title: { $regex: new RegExp(query, "i") } },
-        { content: { $regex: new RegExp(query, "i") } }, // Corrected from "1" to "i"
+        { content: { $regex: new RegExp(query, "i") } }, 
       ],
     });
 
     return res.json({
       error: false,
-      notes: matchingNote, // Corrected from note to notes
+      notes: matchingNote, // this from note to notes
       message: "Searched notes matched successfully",
     });
   } catch (error) {
-    console.error("Error searching notes:", error); // Log the error for debugging
+    console.error("Error searching notes:", error); 
     return res.status(500).json({
       error: true,
       message: "Internal server error",
