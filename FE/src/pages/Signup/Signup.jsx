@@ -27,25 +27,19 @@ function Signup() {
     setError("");
 
     try {
-      const response = await axiosInstance.post("/api/users/create-account", {
-        fullName: name,
-        email: email,
-        password: password,
-      });
-      if (response.data && response.data.accessToken) {
-        localStorage.setItem("token", response.data.accessToken);
-        navigate("/dashboard");
+      const response = await axios.post(
+        "http://localhost:5000/api/users/create-account",
+        {
+          fullName: name,
+          email: email,
+          password: password,
+        }
+      );
+      if (response.data) {
+        navigate("/login");
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong. Please try again later.");
-      }
+      setError(error.response.data.message);
     }
   };
 

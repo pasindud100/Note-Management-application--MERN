@@ -37,38 +37,34 @@ export const createAccount = async (req, res) => {
   }
 
   try {
-    const isUser = await User.findOne({ email });
-    if (isUser) {
-      return res.status(409).json({ message: "User already exists" });
+    const isUser  = await User.findOne({ email });
+    if (isUser ) {
+      return res.status(409).json({ message: "User  already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ fullName, email, password: hashedPassword });
     await user.save();
 
-    
-    const accessToken = jwt.sign(
-      { id: user._id },
-      process.env.ACCESS_TOKEN_SECRET,
-      {
-        expiresIn: "15m",
-      }
-    );
-
     return res.json({
       error: false,
-      message: "Login successful",
-      user,
-      accessToken,
+      message: "Account created successfully",
     });
-
-  } 
-  
-  catch (error) {
+  } catch (error) {
+    console.error("Signup Error:", error); 
     return res.status(500).json({ message: "Internal server error", error });
   }
 };
 
+    // const accessToken = jwt.sign(
+    //   { id: user._id },
+    //   process.env.ACCESS_TOKEN_SECRET,
+    //   {
+    //     expiresIn: "15m",
+    //   }
+    // );
+
+ 
 //loginimport jwt from "jsonwebtoken";
 
 // Login
@@ -117,8 +113,8 @@ export const login = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    console.log("Request received at /get-user"); 
-    console.log("Decoded user from token:", req.user); 
+    console.log("Request received at /get-user");
+    console.log("Decoded user from token:", req.user);
 
     if (!req.user || !req.user._id) {
       return res.status(401).json({ message: "Unauthorized: No valid user" });

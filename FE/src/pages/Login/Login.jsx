@@ -3,6 +3,7 @@ import Navbar from "../../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axiosInstance from "../../utils/axiosInstancs";
+import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -31,10 +32,13 @@ function Login() {
     setError(null);
 
     try {
-      const response = await axiosInstance.post("/api/users/login", {
-        email: email,
-        password: password,
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        {
+          email: email,
+          password: password,
+        }
+      );
       if (response.data && response.data.accessToken) {
         localStorage.setItem("token", response.data.accessToken);
         navigate("/dashboard");
