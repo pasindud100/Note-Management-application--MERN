@@ -3,7 +3,14 @@ import { LuCheck } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 
 function ToastMessage({ isShown, message, type, onClose }) {
-  useEffect(() => {});
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      onClose();
+    }, 3000);
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, [onClose]);
 
   return (
     <div

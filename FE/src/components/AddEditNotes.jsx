@@ -3,7 +3,13 @@ import TagInput from "./TagInput";
 import { IoMdClose } from "react-icons/io";
 import axiosInstance from "../utils/axiosInstancs";
 
-function AddEditNotes({ noteDate, type, getAllNotes, onClose }) {
+function AddEditNotes({
+  noteDate,
+  type,
+  getAllNotes,
+  onClose,
+  showToastMessage,
+}) {
   const [title, setTitle] = useState(noteDate?.title || "");
   const [content, setContent] = useState(noteDate?.content || "");
   const [tags, setTags] = useState(noteDate?.tags || []);
@@ -18,37 +24,50 @@ function AddEditNotes({ noteDate, type, getAllNotes, onClose }) {
         tags,
       });
 
-      getAllNotes();
-      onClose();
-      window.location.reload();
+      if (response.data && response.data.note) {
+        showToastMessage("Note added successfully");
+        getAllNotes();
+        onClose();
+      }
     } catch (error) {
-      if (error.response && error.response.data) {
-        setErr(error.response.data.message || "An error occurred");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
       } else {
-        setErr("An unexpected error occurred");
+        setErr(error.response.data.message);
       }
     }
   };
 
   // Edit note
   const editNote = async () => {
+    const noteId = noteDate._id;
+
     try {
-      const noteId = noteDate._id;
       const response = await axiosInstance.put(
-        `/api/notes/edit-note/${noteId}`,
+        "/api/notes/edit-note/" + noteId,
         {
+          noteId,
           title,
           content,
           tags,
         }
       );
 
-      getAllNotes();
-      onClose();
-      window.location.reload(); 
+      if (response.data && response.data.note) {
+        showToastMessage("Note Update successfully");
+        getAllNotes();
+        onClose();
+      }
     } catch (error) {
-      if (error.response && error.response.data) {
-        setErr(error.response.data.message || "An error occurred");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setErr(error.response.data.message);
       } else {
         setErr("An unexpected error occurred");
       }

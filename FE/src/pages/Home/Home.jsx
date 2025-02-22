@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstancs";
 import toast from "../../components/ToastMessage";
 import ToastMessage from "../../components/ToastMessage";
+import EmptyCard from "../../components/EmptyCard";
+import img1 from "../../assets/noContent.png";
 
 function Home() {
   const [openAddEditModel, setOpenAddEditModel] = useState({
@@ -24,6 +26,10 @@ function Home() {
 
   const [userInfo, setUserInfo] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
+
+  //search note
+
   const navigate = useNavigate();
 
   const handleEdit = (noteDetails) => {
@@ -72,6 +78,45 @@ function Home() {
     }
   };
 
+  //delete note
+  const deleteNote = async (data) => {
+    const noteId = data._id;
+    try {
+      const response = await axiosInstance.delete(
+        "/api/notes/delete-note/" + noteId
+      );
+
+      if (response.data && !response.data.error) {
+        showToastMessage("Note delete successfully", "delete");
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        console.log("An unexpected error occurred");
+      }
+    }
+  };
+
+  //search notes
+  const onSearchNote = async (query) => {
+    try {
+      const response = await axiosInstance.get("/api/notes/serarch-note", {
+        params: { query },
+      });
+      if (response.data && response.data.notes) {
+        setIsSearch(true);
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getAllNotes();
     getUserInfo();
@@ -79,26 +124,33 @@ function Home() {
 
   return (
     <div>
-      <Navbar userInfo={userInfo} />
+      <Navbar userInfo={userInfo} onSearchNote={onSearchNote} />
 
       <div className="container mx-auto">
-        <div className="grid grid-cols-3 gap-4 mt-8">
-          {allNotes.map((item) => (
-            <NoteCard
-              key={item._id}
-              title={item.title}
-              date={item.createdOn}
-              content={item.content}
-              tags={item.tags}
-              isPinned={item.isPinned}
-              onEdit={() => {
-                handleEdit(item);
-              }}
-              onDelete={() => {}}
-              onPinNote={() => {}}
-            />
-          ))}
-        </div>
+        {allNotes.length > 0 ? (
+          <div className="grid grid-cols-3 gap-4 mt-8">
+            {allNotes.map((item) => (
+              <NoteCard
+                key={item._id}
+                title={item.title}
+                date={item.createdOn}
+                content={item.content}
+                tags={item.tags}
+                isPinned={item.isPinned}
+                onEdit={() => {
+                  handleEdit(item);
+                }}
+                onDelete={() => deleteNote(item)}
+                onPinNote={() => {}}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyCard
+            imgSrc={img1}
+            message={"No any note yet..Please create note.."}
+          />
+        )}
       </div>
 
       <button
@@ -128,6 +180,7 @@ function Home() {
             setOpenAddEditModel({ isShown: false, type: "add", data: null });
           }}
           getAllNotes={getAllNotes}
+          showToastMessage={showToastMessage}
         />
       </Modal>
 

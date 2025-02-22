@@ -148,3 +148,35 @@ export const updatePinned = async (req, res) => {
     });
   }
 };
+
+export const serarchNote = async (req, res) => {
+  const { user } = req.user;
+  const queary = req.queary;
+
+  if (!queary) {
+    return res.status(400).json({
+      error: true,
+      message: "Search quary is required..",
+    });
+  }
+  try {
+    const matchingNote = await Note.find({
+      userId: user._id,
+      $or: [
+        { title: { $regex: new RegExp(queary, "i") } },
+        { content: { $regex: new RegExp(queary, "1") } },
+      ],
+    });
+
+    return res.json({
+      error: false,
+      note: matchingNote,
+      message: "Serched note match successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: "internal server error",
+    });
+  }
+};
